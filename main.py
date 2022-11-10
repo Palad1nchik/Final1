@@ -16,10 +16,12 @@ api.mount("/blog", WSGIMiddleware(app))
 
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    intro = db.Column(db.String(300), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(300), nullable=False)
+    password = db.Column(db.String(300), nullable=False)
     text = db.Column(db.Text, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
+
 
     def __repr__(self):
         return '<Article %r>' % self.id
@@ -41,17 +43,17 @@ def about():
 
 
 @app.route('/blog')
-def about():
+def blog():
     return render_template("blog.html")
 
 
 @app.route('/blog-single')
-def about():
+def blog1():
     return render_template("blog-single.html")
 
 
 @app.route('/services')
-def about():
+def services():
     return render_template("services.html")
 
 
@@ -69,17 +71,18 @@ def post_detail(id):
 
 @app.route('/create-article', methods=['POST', 'GET'])
 def create_article():
-    if request.method == "POST":
-        title = request.form['title']
-        intro = request.form['intro']
+    if request.method == "GET":
+        phone = request.form['phone']
+        email = request.form['email']
         text = request.form['text']
+        password = request.form['password']
 
-        article = Article(title=title, intro=intro, text=text)
+        article = Article(phone=phone, email=email, text=text, password=password)
         db.session.add(article)
         db.session.commit()
-        return render_template("create-article.html")
+        return render_template("index.html")
     else:
-        return render_template("create-article.html")
+        return render_template("index.html")
 
 
 @api.get('/api')
